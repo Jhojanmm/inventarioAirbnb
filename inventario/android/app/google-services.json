@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1013200605818",
+    "project_id": "inventario-31331",
+    "storage_bucket": "inventario-31331.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013200605818:android:cba68ca3f47198b8c3a1c3",
+        "android_client_info": {
+          "package_name": "com.airbnbinvetario.inventario"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013200605818-tqd6bc7o7a7bt190nu29pfikb7kakhr4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB76sEDgN5J5muyfA7a2Ux7qHmeT81LEvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013200605818-tqd6bc7o7a7bt190nu29pfikb7kakhr4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
