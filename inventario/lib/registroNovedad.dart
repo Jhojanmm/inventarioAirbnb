@@ -3,10 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:inventario/alojamiento.dart';
 
-
-
 class Registro extends StatefulWidget {
-  const Registro({Key? key, required this.title, required this.id}) : super(key: key);
+  const Registro({Key? key, required this.title, required this.id})
+      : super(key: key);
 
   final String title;
   final String id;
@@ -17,10 +16,10 @@ class Registro extends StatefulWidget {
 
 class _RegistroState extends State<Registro> {
   final CollectionReference alojamientoCollection =
-      FirebaseFirestore.instance.collection('alojamiento');
+      FirebaseFirestore.instance.collection('coanfitriones');
   final CollectionReference inventarioCollection =
       FirebaseFirestore.instance.collection('novedades');
-  List housesInfo = [];
+  List<Map<String, dynamic>> housesInfo = [];
 
   @override
   void initState() {
@@ -28,32 +27,32 @@ class _RegistroState extends State<Registro> {
     getInventario();
   }
 
-  void getInventario() async {
+  Future<void> getInventario() async {
     QuerySnapshot houses = await inventarioCollection.get();
-    if (houses.docs.length != 0) {
-      int i = 0;
-      int j = 0;
-      List novedades = [];
-      for (var doc in houses.docs) {
-        novedades.add(doc.data());
-      }
-      for (var doc in houses.docs) {
-        if (novedades[j]["id"] == widget.id) {
-          housesInfo.add(doc.data());
-        }
-        j = j + 1;
-      }
-      print(novedades);
-      novedades = [];
-      j = 0;
-    }
-    setState(() {});
-  }
-  @override
-  Widget build(BuildContext context) {
+    QuerySnapshot coanfitriones = await alojamientoCollection.get();
+
     
 
+    if (houses.docs.isNotEmpty) {
+      List<Map<String, dynamic>> novedades = houses.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+
+      for (var novedad in novedades) {
+        if (novedad["id"] == widget.id) {
+          housesInfo.add(novedad);
+        }
+      }
+
+      print(novedades);
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
         title: Text(
           'Registro de novedades',
@@ -114,7 +113,7 @@ class _RegistroState extends State<Registro> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        novedad['texto']!,
+                        "Jhojanmm",
                         style: TextStyle(fontSize: 16),
                       ),
                     ],

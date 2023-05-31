@@ -22,15 +22,18 @@ class Alojamiento {
 class AlojamientoPage extends StatelessWidget {
   final List<dynamic> inventario;
   final Alojamiento alojamiento;
-  
 
-  const AlojamientoPage(
-      {Key? key, required this.inventario, required this.alojamiento})
-      : super(key: key);
+  const AlojamientoPage({
+    Key? key,
+    required this.inventario,
+    required this.alojamiento,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  MaterialApp(
+      debugShowCheckedModeBanner: false, // Ocultar el banner de depuración
+      home: Scaffold(
       appBar: AppBar(
         title: Text(
           alojamiento.direccion,
@@ -44,13 +47,13 @@ class AlojamientoPage extends StatelessWidget {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: Container(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+              padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
                 'Inventario',
                 style: Theme.of(context).textTheme.headline5,
@@ -88,68 +91,20 @@ class AlojamientoPage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      'Camas',
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    element['camas'].toString(),
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
+                              _buildInventoryItem(
+                                context,
+                                'Camas',
+                                element['camas'].toString(),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      'Lavadoras',
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    element['lavadoras'].toString(),
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
+                              _buildInventoryItem(
+                                context,
+                                'Lavadoras',
+                                element['lavadoras'].toString(),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      'Cortinas',
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    element['cortinas'].toString(),
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
+                              _buildInventoryItem(
+                                context,
+                                'Cortinas',
+                                element['cortinas'].toString(),
                               ),
                             ],
                           ),
@@ -167,17 +122,19 @@ class AlojamientoPage extends StatelessWidget {
           ],
         ),
       ),
-      
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            
             onPressed: () {
-              
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NovedadForm(inventario: inventario, id: alojamiento.id)),
+                MaterialPageRoute(
+                  builder: (context) => NovedadForm(
+                    inventario: inventario,
+                    id: alojamiento.id,
+                  ),
+                ),
               );
             },
             child: Icon(Icons.add),
@@ -188,7 +145,12 @@ class AlojamientoPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Registro(title: "Registro de novedades",id: alojamiento.id)),
+                MaterialPageRoute(
+                  builder: (context) => Registro(
+                    title: "Registro de novedades",
+                    id: alojamiento.id,
+                  ),
+                ),
               );
             },
             child: Icon(Icons.history),
@@ -196,9 +158,34 @@ class AlojamientoPage extends StatelessWidget {
           ),
         ],
       ),
+    ));
+  }
+
+  Widget _buildInventoryItem(
+    BuildContext context,
+    String title,
+    String value,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 14.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 18.0,
+          ),
+        ),
+      ],
     );
   }
 }
-
-
-

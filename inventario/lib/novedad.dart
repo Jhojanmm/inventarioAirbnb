@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -31,21 +29,20 @@ class _NovedadFormState extends State<NovedadForm> {
   void _enviarNovedad() {
     if (_formKey.currentState!.validate()) {
       final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-       _firestore.collection('novedades').add({
-         'texto': _textFieldController.text,
-         'camas': _camasController.text,
-         'lavadoras': _lavadorasController.text,
-         'cortinas': _cortinasController.text,
-         'id' : widget.id,
-       });
+      _firestore.collection('novedades').add({
+        'texto': _textFieldController.text,
+        'camas': _camasController.text,
+        'lavadoras': _lavadorasController.text,
+        'cortinas': _cortinasController.text,
+        'id': widget.id,
+      });
 
-      // Reiniciar los controladores de texto después de enviar la novedad
+ 
       _textFieldController.clear();
       _camasController.clear();
       _lavadorasController.clear();
       _cortinasController.clear();
 
-      // Mostrar un diálogo de éxito
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -136,7 +133,7 @@ class _NovedadFormState extends State<NovedadForm> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "camas",
+                              'Camas',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -145,9 +142,9 @@ class _NovedadFormState extends State<NovedadForm> {
                               controller: _camasController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: widget.inventario[0]["camas"].toString()
+                                labelText:
+                                    widget.inventario[0]["camas"].toString(),
                               ),
-                              
                               keyboardType: TextInputType.number,
                             ),
                           ],
@@ -170,7 +167,8 @@ class _NovedadFormState extends State<NovedadForm> {
                               controller: _lavadorasController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: widget.inventario[0]["lavadoras"].toString(),
+                                labelText: widget.inventario[0]["lavadoras"]
+                                    .toString(),
                               ),
                               keyboardType: TextInputType.number,
                             ),
@@ -194,7 +192,8 @@ class _NovedadFormState extends State<NovedadForm> {
                               controller: _cortinasController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: widget.inventario[0]["cortinas"].toString(),
+                                labelText:
+                                    widget.inventario[0]["cortinas"].toString(),
                               ),
                               keyboardType: TextInputType.number,
                             ),
@@ -206,18 +205,18 @@ class _NovedadFormState extends State<NovedadForm> {
                 ),
                 Spacer(),
                 ElevatedButton(
-                  
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color.fromARGB(255, 109, 109, 109), // Color de fondo del botón
+                  ),
                   onPressed: _enviarNovedad,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-
                     child: Text(
                       'Enviar Novedad',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
-                      
                     ),
                   ),
                 ),

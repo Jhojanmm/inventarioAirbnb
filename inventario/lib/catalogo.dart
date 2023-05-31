@@ -58,7 +58,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  MaterialApp(
+      debugShowCheckedModeBanner: false, // Ocultar el banner de depuración
+      home: Scaffold(
       appBar: AppBar(
         title: Text(
           widget.title,
@@ -108,67 +110,62 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AlojamientoPage(
-                            inventario: inventario, alojamiento: alojamiento)),
+                      builder: (context) => AlojamientoPage(
+                        inventario: inventario,
+                        alojamiento: alojamiento,
+                      ),
+                    ),
                   );
                 },
-                child: Container(
+                child: Card(
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.all(16),
-                        child: Icon(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(
                           Icons.home,
                           color: Colors.grey,
                           size: 48,
                         ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              alojamiento.direccion,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                alojamiento.direccion,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 8),
-                            inventario.length == 0
-                                ? Text(
-                                    "No hay información",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
+                              SizedBox(height: 8),
+                              inventario.isEmpty
+                                  ? Text(
+                                      "No hay información",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Cantidad de habitaciones: ${inventario[0]["habitaciones"]}",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                  )
-                                : Text(
-                                    "Cantidad de habitaciones: ${inventario[0]["habitaciones"]}",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -176,7 +173,6 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-    );
+    ));
   }
 }
-
