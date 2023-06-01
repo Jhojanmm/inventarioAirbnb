@@ -18,7 +18,10 @@ class _NovedadFormState extends State<NovedadForm> {
   final TextEditingController _camasController = TextEditingController();
   final TextEditingController _lavadorasController = TextEditingController();
   final TextEditingController _cortinasController = TextEditingController();
-
+  final TextEditingController _toallasController = TextEditingController();
+  final TextEditingController _mueblesController = TextEditingController();
+  final TextEditingController _cobijasController = TextEditingController();
+  final TextEditingController _almohadasController = TextEditingController();
   String? _validateText(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor, ingrese un texto';
@@ -29,19 +32,41 @@ class _NovedadFormState extends State<NovedadForm> {
   void _enviarNovedad() {
     if (_formKey.currentState!.validate()) {
       final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+      final DateTime now = DateTime.now();
       _firestore.collection('novedades').add({
         'texto': _textFieldController.text,
         'camas': _camasController.text,
         'lavadoras': _lavadorasController.text,
         'cortinas': _cortinasController.text,
+        'toallas': _toallasController.text,
+        'muebles': _mueblesController.text,
+        'cobijas': _cobijasController.text,
+        'almohadas': _almohadasController.text,
         'id': widget.id,
+        'fecha': now.toString(),
+      }).then((value) {
+        final String novedadId = value.id;
+        final CollectionReference alojamientoRef =
+            _firestore.collection('inventario');
+        alojamientoRef
+            .where('id', isEqualTo: widget.id)
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((doc) {
+            alojamientoRef.doc(doc.id).update({
+              'camas': _camasController.text,
+              'lavadoras': _lavadorasController.text,
+              'cortinas': _cortinasController.text,
+              'toallas': _toallasController.text,
+              'muebles': _mueblesController.text,
+              'cobijas': _cobijasController.text,
+              'almohadas': _almohadasController.text,
+            });
+          });
+        });
       });
 
- 
-      _textFieldController.clear();
-      _camasController.clear();
-      _lavadorasController.clear();
-      _cortinasController.clear();
+      
 
       showDialog(
         context: context,
@@ -68,159 +93,268 @@ class _NovedadFormState extends State<NovedadForm> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    SizedBox(width: 16),
-                    Text(
-                      'Agregar Novedad',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+        body: SingleChildScrollView(
+          // Agregar SingleChildScrollView
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 24),
-                Container(
-                  child: Text(
-                    'Texto',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 8),
-                TextFormField(
-                  controller: _textFieldController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Escribe aquí',
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 4,
-                  validator: _validateText,
-                ),
-                SizedBox(height: 24),
-                Container(
-                  child: Text(
-                    'Detalles del Apartamento',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Camas',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextFormField(
-                              controller: _camasController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText:
-                                    widget.inventario[0]["camas"].toString(),
-                              ),
-                              keyboardType: TextInputType.number,
-                            ),
-                          ],
+                      SizedBox(width: 16),
+                      Text(
+                        'Agregar Novedad',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Lavadoras',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextFormField(
-                              controller: _lavadorasController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: widget.inventario[0]["lavadoras"]
-                                    .toString(),
-                              ),
-                              keyboardType: TextInputType.number,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Cortinas',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextFormField(
-                              controller: _cortinasController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText:
-                                    widget.inventario[0]["cortinas"].toString(),
-                              ),
-                              keyboardType: TextInputType.number,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: const Color.fromARGB(255, 109, 109, 109), // Color de fondo del botón
+                    ],
                   ),
-                  onPressed: _enviarNovedad,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  SizedBox(height: 24),
+                  Container(
                     child: Text(
-                      'Enviar Novedad',
+                      'Texto',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 8),
+                  TextFormField(
+                    controller: _textFieldController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Escribe aquí',
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 4,
+                    validator: _validateText,
+                  ),
+                  SizedBox(height: 24),
+                  Container(
+                    child: Text(
+                      'Detalles del Apartamento',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Camas',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextFormField(
+                                controller: _camasController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText:
+                                      widget.inventario[0]["camas"].toString(),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Lavadoras',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextFormField(
+                                controller: _lavadorasController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: widget.inventario[0]["lavadoras"]
+                                      .toString(),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Almohadas',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextFormField(
+                                controller: _almohadasController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: widget.inventario[0]["almohadas"]
+                                      .toString(),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Cortinas',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextFormField(
+                                controller: _cortinasController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: widget.inventario[0]["cortinas"]
+                                      .toString(),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Toallas',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextFormField(
+                                controller: _toallasController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: widget.inventario[0]["toallas"]
+                                      .toString(),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Muebles',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextFormField(
+                                controller: _mueblesController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: widget.inventario[0]["muebles"]
+                                      .toString(),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Cobijas',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextFormField(
+                                controller: _cobijasController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: widget.inventario[0]["cobijas"]
+                                      .toString(),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  
+                  
+                  SizedBox(height: 24),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey, // Color de fondo del botón
+                    ),
+                    onPressed: _enviarNovedad,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'Enviar Novedad',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

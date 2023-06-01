@@ -41,14 +41,15 @@ class _HomePageState extends State<HomePage> {
   List housesInfo = [];
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     getInventario();
   }
 
   void getInventario() async {
     QuerySnapshot houses = await inventarioCollection.get();
     if (houses.docs.length != 0) {
+      housesInfo.clear();
       for (var doc in houses.docs) {
         housesInfo.add(doc.data());
       }
@@ -58,121 +59,122 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false, // Ocultar el banner de depuración
       home: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          title: Text(
+            widget.title,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                // implementar la búsqueda
+              },
+            ),
+          ],
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // implementar la búsqueda
-            },
-          ),
-        ],
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: alojamientoCollection.snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Ocurrió un error al cargar los datos'));
-          }
+        body: StreamBuilder<QuerySnapshot>(
+          stream: alojamientoCollection.snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Ocurrió un error al cargar los datos'));
+            }
 
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final data = snapshot.requireData;
-          final alojamientos =
-              data.docs.map((doc) => Alojamiento.fromSnapshot(doc)).toList();
+            final data = snapshot.requireData;
+            final alojamientos =
+                data.docs.map((doc) => Alojamiento.fromSnapshot(doc)).toList();
 
-          return ListView.builder(
-            itemCount: alojamientos.length,
-            itemBuilder: (context, index) {
-              final alojamiento = alojamientos[index];
-              final inventario = housesInfo
-                  .where((element) => element["id"] == alojamiento.id)
-                  .toList();
+            return ListView.builder(
+              itemCount: alojamientos.length,
+              itemBuilder: (context, index) {
+                final alojamiento = alojamientos[index];
+                final inventario = housesInfo
+                    .where((element) => element["id"] == alojamiento.id)
+                    .toList();
 
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AlojamientoPage(
-                        inventario: inventario,
-                        alojamiento: alojamiento,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AlojamientoPage(
+                          inventario: inventario,
+                          alojamiento: alojamiento,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.home,
+                            color: Colors.grey,
+                            size: 48,
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  alojamiento.direccion,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                inventario.isEmpty
+                                    ? Text(
+                                        "No hay información",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 16,
+                                        ),
+                                      )
+                                    : Text(
+                                        "Cantidad de habitaciones: ${inventario[0]["habitaciones"]}",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                },
-                child: Card(
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.home,
-                          color: Colors.grey,
-                          size: 48,
-                        ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                alojamiento.direccion,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              inventario.isEmpty
-                                  ? Text(
-                                      "No hay información",
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16,
-                                      ),
-                                    )
-                                  : Text(
-                                      "Cantidad de habitaciones: ${inventario[0]["habitaciones"]}",
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
-    ));
+    );
   }
 }

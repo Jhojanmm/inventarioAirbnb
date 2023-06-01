@@ -31,134 +31,175 @@ class AlojamientoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false, // Ocultar el banner de depuración
       home: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          alojamiento.direccion,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                'Inventario',
-                style: Theme.of(context).textTheme.headline5,
-              ),
+        appBar: AppBar(
+          title: Text(
+            alojamiento.direccion,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: inventario.length,
-                itemBuilder: (context, index) {
-                  final element = inventario[index];
-                  if (element['id'] == alojamiento.id) {
-                    return Container(
-                      margin: EdgeInsets.all(8.0),
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(
-                          color: Colors.grey[300]!,
-                          width: 1.0,
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  'Inventario',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: inventario.length,
+                  itemBuilder: (context, index) {
+                    final element = inventario[index];
+                    if (element['id'] == alojamiento.id) {
+                      return Container(
+                        margin: EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(
+                            color: Colors.grey[300]!,
+                            width: 1.0,
+                          ),
                         ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: Text(
-                              'Detalle de inventario',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text(
+                                'Detalle de inventario',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _buildInventoryItem(
-                                context,
-                                'Camas',
-                                element['camas'].toString(),
-                              ),
-                              _buildInventoryItem(
-                                context,
-                                'Lavadoras',
-                                element['lavadoras'].toString(),
-                              ),
-                              _buildInventoryItem(
-                                context,
-                                'Cortinas',
-                                element['cortinas'].toString(),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return ListTile(
-                      title: Text("No hay información"),
-                    );
-                  }
-                },
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildInventoryItem(
+                                  context,
+                                  'Camas',
+                                  element['camas'].toString(),
+                                ),
+                                _buildInventoryItem(
+                                  context,
+                                  'Lavadoras',
+                                  element['lavadoras'].toString(),
+                                ),
+                                _buildInventoryItem(
+                                  context,
+                                  'Cortinas',
+                                  element['cortinas'].toString(),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildInventoryItem(
+                                  context,
+                                  'Toallas',
+                                  element['toallas'].toString(),
+                                ),
+                                _buildInventoryItem(
+                                  context,
+                                  'Muebles',
+                                  element['muebles'].toString(),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildInventoryItem(
+                                  context,
+                                  'Cobijas',
+                                  element['cobijas'].toString(),
+                                ),
+                                _buildInventoryItem(
+                                  context,
+                                  'Almohadas',
+                                  element['almohadas'].toString(),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return ListTile(
+                        title: Text("No hay información"),
+                      );
+                    }
+                  },
+                ),
               ),
+            ],
+          ),
+        ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NovedadForm(
+                      inventario: inventario,
+                      id: alojamiento.id,
+                    ),
+                  ),
+                );
+              },
+              child: Icon(Icons.add),
+              backgroundColor: Colors.blueGrey[800],
+            ),
+            SizedBox(height: 16),
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Registro(
+                      title: "Registro de novedades",
+                      id: alojamiento.id,
+                    ),
+                  ),
+                );
+              },
+              child: Icon(Icons.history),
+              backgroundColor: Colors.blueGrey[800],
+            ),
+            SizedBox(height: 16),
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.pop(context); // Flecha para volver a la página anterior
+              },
+              child: Icon(Icons.arrow_back),
+              backgroundColor: Colors.blueGrey[800],
             ),
           ],
         ),
       ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NovedadForm(
-                    inventario: inventario,
-                    id: alojamiento.id,
-                  ),
-                ),
-              );
-            },
-            child: Icon(Icons.add),
-            backgroundColor: Colors.blueGrey[800],
-          ),
-          SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Registro(
-                    title: "Registro de novedades",
-                    id: alojamiento.id,
-                  ),
-                ),
-              );
-            },
-            child: Icon(Icons.history),
-            backgroundColor: Colors.blueGrey[800],
-          ),
-        ],
-      ),
-    ));
+    );
   }
 
   Widget _buildInventoryItem(
@@ -167,18 +208,16 @@ class AlojamientoPage extends StatelessWidget {
     String value,
   ) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-            ),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        SizedBox(height: 8.0),
         Text(
           value,
           style: TextStyle(

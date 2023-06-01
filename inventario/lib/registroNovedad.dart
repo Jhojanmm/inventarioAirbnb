@@ -116,6 +116,10 @@ class _RegistroState extends State<Registro> {
                         "Jhojanmm",
                         style: TextStyle(fontSize: 16),
                       ),
+                      Text(
+                        novedad['fecha'],
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ],
                   ),
                 );
